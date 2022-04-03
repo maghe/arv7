@@ -52,7 +52,7 @@ public class DataManager {
 
     private List<Sample> getSamples(String fileName) throws FileNotFoundException {
 
-        List<SampleCSV> sampleCSVs = new CsvToBeanBuilder(new FileReader(fileName))
+        List<SampleCSV> sampleCSVs = new CsvToBeanBuilder<SampleCSV>(new FileReader(fileName))
                 .withType(SampleCSV.class)
                 .withSkipLines(6)
                 .build()
@@ -62,7 +62,7 @@ public class DataManager {
         return sampleCSVs
                 .stream()
                 .filter(s -> s.getSampleName() != null)
-                .map(s -> mapToSample(s))
+                .map(this::mapToSample)
                 .collect(Collectors.toList());
     }
 
@@ -73,25 +73,16 @@ public class DataManager {
             return "";
         }
 
-        String header = "";
         List<Sample> samples = getSamples(inputPaths.get(0));
 
         String sampleName = samples.get(0).getSampleName();
+
         StringBuilder sb = new StringBuilder();
-
-        sb.append("sampleName");
-        sb.append(",");
-        sb.append("patientId");
-        sb.append(",");
-        sb.append("occurrences");
-        sb.append(",");
-
+        sb.append("sampleName,patientId,occurrences");
 
         for (Sample sample : samples) {
-
             if (sampleName.equals(sample.getSampleName())) {
-                sb.append(sample.getTargetName());
-                sb.append(",");
+                sb.append(sample.getTargetName() + ",");
             }
         }
         return sb.toString();

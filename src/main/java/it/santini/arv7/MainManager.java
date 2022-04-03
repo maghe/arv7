@@ -33,42 +33,41 @@ public class MainManager {
         writeOnFile(folderPath, header, aggregatedResults);
         print(folderPath, header, aggregatedResults);
 
-        //  System.out.println(header);
-
-
     }
 
     private void print(String folderPath, String header, List<String> aggregatedResults) {
         System.out.println(folderPath + "\\resultAggregated.csv");
-        System.out.println(header );
+        System.out.println(header);
         for (String aggregatedResult : aggregatedResults) {
             System.out.println(aggregatedResult);
         }
     }
 
-    private void writeOnFile(String folderPath, String header, List<String> aggregatedResults) throws IOException {
+    private void writeOnFile(String folderPath, String header, List<String> aggregatedResults){
 
-        FileWriter writer = new FileWriter(folderPath + "\\resultAggregated.csv");
-        writer.write(header + System.lineSeparator());
-        for (String aggregatedResult : aggregatedResults) {
-            writer.write(aggregatedResult + System.lineSeparator());
-        }
-        writer.close();
-    }
+        try (FileWriter writer = new FileWriter(folderPath + "\\resultAggregated.csv")){
 
-
-    public List<String> listFilesForFolder(final File folder, String name) {
-
-        List<String> fileUrls = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get(folder.getAbsolutePath()))) {
-            paths
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.endsWith(name))
-                    .forEach(p -> fileUrls.add(p.toString()));
+            writer.write(header + System.lineSeparator());
+            for (String aggregatedResult : aggregatedResults) {
+                writer.write(aggregatedResult + System.lineSeparator());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return fileUrls;
     }
-}
+
+        public List<String> listFilesForFolder ( final File folder, String name){
+
+            List<String> fileUrls = new ArrayList<>();
+            try (Stream<Path> paths = Files.walk(Paths.get(folder.getAbsolutePath()))) {
+                paths
+                        .filter(Files::isRegularFile)
+                        .filter(p -> p.endsWith(name))
+                        .forEach(p -> fileUrls.add(p.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return fileUrls;
+        }
+    }
 
