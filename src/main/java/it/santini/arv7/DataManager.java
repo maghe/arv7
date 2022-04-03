@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
+
+
     public List<String> aggregate(String fileName) {
 
         List<String> aggregatedResults = new ArrayList<>();
@@ -61,5 +63,51 @@ public class DataManager {
                 sampleCSV.getTargetName(),
                 cqMeanVerified
         );
+    }
+
+    public String getHeader(String fileName) {
+        String header = "";
+
+        try {
+            List<SampleCSV> sampleCSVs = new CsvToBeanBuilder(new FileReader(fileName))
+                    .withType(SampleCSV.class)
+                    .withSkipLines(6)
+                    .build()
+                    .parse();
+
+
+            List<Sample> samples = new ArrayList<>();
+            for (SampleCSV sampleCSV : sampleCSVs) {
+                if (sampleCSV.getSampleName() != null) {
+                //    System.out.println(sampleCSV.toString());
+                    samples.add(mapToSample(sampleCSV));
+                }
+            }
+
+            String sampleName = samples.get(0).getSampleName();
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("sampleName");
+            sb.append(",");
+            sb.append("patientId");
+            sb.append(",");
+            sb.append("occurrences");
+            sb.append(",");
+
+
+            for (Sample sample : samples) {
+
+
+                if (sampleName.equals(sample.getSampleName())) {
+                    sb.append(sample.getTargetName());
+                    sb.append(",");
+            }
+            }
+            return sb.toString();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

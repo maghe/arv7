@@ -18,11 +18,18 @@ public class MainOpenCSV {
         List<String> aggregatedResults = new ArrayList<>();
 
         System.out.println("------------------");
+
+        String header = dataManager.getHeader(files.get(0));
+
+        System.out.println(header);
+
         for (String file : files) {
             System.out.println(file);
             aggregatedResults.addAll(dataManager.aggregate(file));
         }
 
+        System.out.println("--------------------------------------------------------------------");
+        System.out.println(header);
         for(String aggregatedResult : aggregatedResults){
             System.out.println(aggregatedResult);
         }
