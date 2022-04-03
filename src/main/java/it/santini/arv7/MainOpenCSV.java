@@ -9,28 +9,36 @@ public class MainOpenCSV {
 
     public static void main(String[] args) throws Exception {
 
-        AggregateManager aggregateManager = new AggregateManager();
+        DataManager dataManager = new DataManager();
 
-        String path = "C:\\Users\\048115485\\workspace-experiment\\ARV7-maven\\input\\";
+        String path = "C:\\Users\\048115485\\workspace-experiment\\ARV7\\input\\";
 
-        final File folder = new File(path);
-        List<String> files = listFilesForFolder(folder);
+        List<String> files = listFilesForFolder(new File(path), "Results.csv");
 
+        List<String> aggregatedResults = new ArrayList<>();
+
+        System.out.println("------------------");
         for (String file : files) {
-            aggregateManager.aggregate(file);
+            System.out.println(file);
+            aggregatedResults.addAll(dataManager.aggregate(file));
         }
+
+        for(String aggregatedResult : aggregatedResults){
+            System.out.println(aggregatedResult);
+        }
+
     }
 
 
-    public static List<String> listFilesForFolder(final File folder) {
+    public static List<String> listFilesForFolder(final File folder, String name) {
 
         List<String> files = new ArrayList<>();
 
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
-                files.addAll(listFilesForFolder(fileEntry));
+                files.addAll(listFilesForFolder(fileEntry, name));
             } else {
-                if(fileEntry.getName().equals("Results.csv"))
+                if(fileEntry.getName().equals(name))
                 files.add(fileEntry.getAbsolutePath());
                 System.out.println(fileEntry.getAbsolutePath());
             }

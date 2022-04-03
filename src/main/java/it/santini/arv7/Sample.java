@@ -1,19 +1,14 @@
 package it.santini.arv7;
 
-import com.opencsv.bean.CsvBindByPosition;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Sample {
-
-    @CsvBindByPosition(position = 0)
-    private   String well;
-    @CsvBindByPosition(position = 1)
     private String sampleName;
-    @CsvBindByPosition(position = 2)
+    private String patientId;
+    private String occurrence;
     private String targetName;
-    @CsvBindByPosition(position = 3)
-    private String ampScore;
-    @CsvBindByPosition(position = 7)
-    private String cqMean;
+    private String cqMeanVerified;
 }
