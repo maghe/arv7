@@ -52,7 +52,7 @@ public class DataManager {
 
     private Sample mapToSample(SampleCSV sampleCSV) {
 
-        String cqMeanVerified = sampleCSV.getAmpScore() >= 0.8 ? sampleCSV.getCqMean() : "-";
+        String cqMeanVerified = sampleCSV.getAmpScore() >= 0.8 ? sampleCSV.getCqMean() : "*";
 
         return new Sample(
                 sampleCSV.getSampleName(),
