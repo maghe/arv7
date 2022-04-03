@@ -1,0 +1,8 @@
+# Experiment File Name : card ARV7 _9 08.02.22.sds
+# Created By :giulia.salva@gmail.com
+# Last Modified Date : 2022-02-10 09:46:08 AM
+# Instrument Type : 7900HT Real-Time PCR System
+
+"Name","Plate Barcode","Experiment Run Date","Inter-plate Control Fail","FLAGS","AMPNC","AMPSCORE","BADROX","OFFSCALE","NOAMP","NOISE","SPIKE","NOSIGNAL","NOSAMPLE","EXPFAIL","BLFAIL","THOLDFAIL","CTFAIL","HIGHSD","OUTLIERRG","MTP","PRFLOW","PRFDROP","DRNMIN","CQCONF",
+"card ARV7 _9 08.02.22.sds","","2022-02-09 04:53:30 AM","No","1016.0","0.0","164.0","0.0","0.0","10.0","0.0","3.0","384.0","0.0","90.0","0.0","128.0","0.0","80.0","0.0","0.0","0.0","0.0","0.0","157.0",
+
