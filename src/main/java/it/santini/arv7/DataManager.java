@@ -6,49 +6,34 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataManager {
 
 
-    public List<String> aggregate(String fileName) {
+    public List<String> aggregate(String fileName) throws FileNotFoundException {
+
+        List<Sample> samples = getSamples(fileName);
+
 
         List<String> aggregatedResults = new ArrayList<>();
 
-        try {
-            List<SampleCSV> sampleCSVs = new CsvToBeanBuilder(new FileReader(fileName))
-                    .withType(SampleCSV.class)
-                    .withSkipLines(6)
-                    .build()
-                    .parse();
 
+        String sampleName = "start";
+        StringBuilder sb = new StringBuilder();
+        for (Sample sample : samples) {
 
-            String sampleName = "start";
-            StringBuilder sb = new StringBuilder();
-
-            List<Sample> samples = new ArrayList<>();
-            for (SampleCSV sampleCSV : sampleCSVs) {
-                if (sampleCSV.getSampleName() != null) {
-                    System.out.println(sampleCSV.toString());
-                    samples.add(mapToSample(sampleCSV));
-                }
+            if (sampleName.equals(sample.getSampleName())) {
+                sb.append(sample.getCqMeanVerified() + ",");
+            } else {
+                sampleName = sample.getSampleName();
+                aggregatedResults.add(sb.toString());
+                sb = new StringBuilder();
+                sb.append(sampleName + "," + sample.getPatientId() + "," + sample.getOccurrence() + "," + sample.getCqMeanVerified() + ",");
             }
-
-
-            for (Sample sample : samples) {
-
-                if (sampleName.equals(sample.getSampleName())) {
-                    sb.append(sample.getCqMeanVerified() + ",");
-                } else {
-                    sampleName = sample.getSampleName();
-                    aggregatedResults.add(sb.toString());
-                    sb = new StringBuilder();
-                    sb.append(sampleName + "," + sample.getPatientId() + "," + sample.getOccurrence() + "," + sample.getCqMeanVerified() + ",");
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
+        aggregatedResults.add(sb.toString());
+
         return aggregatedResults;
     }
 
@@ -65,49 +50,51 @@ public class DataManager {
         );
     }
 
-    public String getHeader(String fileName) {
-        String header = "";
+    private List<Sample> getSamples(String fileName) throws FileNotFoundException {
 
-        try {
-            List<SampleCSV> sampleCSVs = new CsvToBeanBuilder(new FileReader(fileName))
-                    .withType(SampleCSV.class)
-                    .withSkipLines(6)
-                    .build()
-                    .parse();
+        List<SampleCSV> sampleCSVs = new CsvToBeanBuilder(new FileReader(fileName))
+                .withType(SampleCSV.class)
+                .withSkipLines(6)
+                .build()
+                .parse();
 
 
-            List<Sample> samples = new ArrayList<>();
-            for (SampleCSV sampleCSV : sampleCSVs) {
-                if (sampleCSV.getSampleName() != null) {
-                //    System.out.println(sampleCSV.toString());
-                    samples.add(mapToSample(sampleCSV));
-                }
-            }
-
-            String sampleName = samples.get(0).getSampleName();
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("sampleName");
-            sb.append(",");
-            sb.append("patientId");
-            sb.append(",");
-            sb.append("occurrences");
-            sb.append(",");
+        return sampleCSVs
+                .stream()
+                .filter(s -> s.getSampleName() != null)
+                .map(s -> mapToSample(s))
+                .collect(Collectors.toList());
+    }
 
 
-            for (Sample sample : samples) {
+    public String getHeader(List<String> inputPaths) throws FileNotFoundException {
 
-
-                if (sampleName.equals(sample.getSampleName())) {
-                    sb.append(sample.getTargetName());
-                    sb.append(",");
-            }
-            }
-            return sb.toString();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (inputPaths.isEmpty()) {
+            return "";
         }
-        return "";
+
+        String header = "";
+        List<Sample> samples = getSamples(inputPaths.get(0));
+
+        String sampleName = samples.get(0).getSampleName();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("sampleName");
+        sb.append(",");
+        sb.append("patientId");
+        sb.append(",");
+        sb.append("occurrences");
+        sb.append(",");
+
+
+        for (Sample sample : samples) {
+
+            if (sampleName.equals(sample.getSampleName())) {
+                sb.append(sample.getTargetName());
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+
     }
 }
